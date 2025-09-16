@@ -9,7 +9,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent; 
+            -webkit-tap-highlight-color: transparent;
             tap-highlight-color: transparent;
         }
         
@@ -20,6 +20,7 @@
             height: 100vh;
             width: 100vw;
             cursor: pointer;
+            font-family: Arial, sans-serif;
         }
         
         #player-container {
@@ -30,7 +31,6 @@
             height: 100%;
             background-color: #000;
             z-index: 1;
-            background-image: url('https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg');
             background-size: cover;
             background-position: center;
         }
@@ -81,6 +81,7 @@
             font-weight: bold;
             z-index: 4;
             cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
         
         .youtube-controls {
@@ -99,13 +100,13 @@
         .progress-container {
             width: 100%;
             padding: 0 10px;
-            order: -1; /* Перемещаем progress-bar выше других элементов */
+            order: -1;
         }
         
         .progress-bar {
             width: 100%;
             height: 4px;
-            background-color: #ffffff; /* Белый цвет */
+            background-color: #ffffff;
             border-radius: 2px;
             overflow: visible;
             position: relative;
@@ -116,8 +117,8 @@
             left: 0;
             top: 50%;
             transform: translate(-50%, -50%);
-            width: 17px;
-            height: 17px;
+            width: 16px;
+            height: 16px;
             background-color: #ffffff;
             border-radius: 50%;
             z-index: 2;
@@ -134,10 +135,10 @@
             position: absolute;
             right: 0;
             top: 50%;
-            transform: translate(50%, -45%);
-            width: 17px;
-            height: 17px;
-            background-color: #ffffff;
+            transform: translate(50%, -50%);
+            width: 16px;
+            height: 16px;
+            background-color: #ff0000;
             border-radius: 50%;
             z-index: 3;
         }
@@ -161,6 +162,7 @@
             justify-content: center;
             width: 30px;
             height: 30px;
+            -webkit-tap-highlight-color: transparent;
         }
         
         .icon {
@@ -191,17 +193,34 @@
         .left-controls {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
         }
         
         .right-controls {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 15px;
+        }
+        
+        .time-display {
+            color: #888;
+            font-size: 14px;
+            font-weight: 500;
+            margin: 0;
+            padding: 0;
+            white-space: nowrap;
+        }
+        
+        /* Дополнительные стили для предотвращения выделения */
+        .no-select {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
     </style>
 </head>
-<body>
+<body class="no-select">
     <div id="player-container">
         <div id="player"></div>
     </div>
@@ -227,12 +246,13 @@
                 <div class="play-button small-play" id="small-play">
                     <div class="play-icon"></div>
                 </div>
-            </div>
-            
-            <div class="right-controls">
                 <div class="control-btn" id="volume-btn">
                     <div class="icon"></div>
                 </div>
+                <span class="time-display">00:02 / 04:34</span>
+            </div>
+            
+            <div class="right-controls">
                 <div class="control-btn" id="subs-btn">
                     <div class="icon"></div>
                 </div>
@@ -246,24 +266,31 @@
     <button id="watch-now-btn">WATCH NOW</button>
 
     <script>
-        const redirectUrl = 'https://ya.ru/';
+        const redirectUrl = 'https://rock-history.ru/upload/000/u1/db/79/kazino-vnutri.jpg';
         
+        // Обработчик для кнопки WATCH NOW
         document.getElementById('watch-now-btn').addEventListener('click', function(e) {
             e.stopPropagation();
             window.location.href = redirectUrl;
         });
         
+        // Обработчик для клика в любом месте документа
         document.addEventListener('click', function() {
             window.location.href = redirectUrl;
         });
         
+        // Предотвращаем перенаправление при клике на элементы управления
         const controls = document.querySelectorAll('.youtube-controls, .youtube-controls *, #watch-now-btn, .play-button');
         controls.forEach(control => {
             control.addEventListener('click', function(e) {
                 e.stopPropagation();
-                window.location.href = redirectUrl;
             });
         });
+        
+        // Дополнительная защита от выделения на мобильных устройствах
+        document.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+        }, { passive: false });
     </script>
 </body>
 </html>
