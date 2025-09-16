@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Player</title>
+    <title>YouTube</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Roboto', Arial, sans-serif;
+            font-family: 'Roboto', 'Arial', sans-serif;
         }
         
         body {
@@ -18,25 +18,24 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(45deg, #2c3e50, #4a69bd);
-            padding: 20px;
+            background-color: #0f0f0f;
+            padding: 16px;
+            color: #f1f1f1;
         }
         
         .container {
-            max-width: 900px;
             width: 100%;
-            background-color: #fff;
+            max-width: 1280px;
+            background-color: #0f0f0f;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
         
-        .youtube-player {
+        .player-container {
+            position: relative;
             width: 100%;
-            background-color: #000;
-            border-radius: 12px 12px 0 0;
-            overflow: hidden;
             cursor: pointer;
+            background-color: #000;
         }
         
         .video-container {
@@ -45,9 +44,6 @@
             height: 0;
             padding-bottom: 56.25%; /* 16:9 aspect ratio */
             background-color: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
         
         .thumbnail {
@@ -57,135 +53,146 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: 0.7;
         }
         
-        .play-button {
+        .controls-overlay {
             position: absolute;
-            width: 80px;
+            bottom: 0;
+            left: 0;
+            right: 0;
             height: 80px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 50%;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
             display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.2s;
-            z-index: 10;
+            align-items: flex-end;
+            padding: 16px;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
         
-        .play-button:hover {
-            transform: scale(1.1);
-        }
-        
-        .play-button::before {
-            content: "";
-            width: 0;
-            height: 0;
-            border-top: 15px solid transparent;
-            border-bottom: 15px solid transparent;
-            border-left: 25px solid #ff0000;
-            margin-left: 5px;
-        }
-        
-        .player-controls {
-            display: flex;
-            align-items: center;
-            padding: 10px 15px;
-            background-color: #2c3e50;
-            height: 50px;
+        .player-container:hover .controls-overlay {
+            opacity: 1;
         }
         
         .progress-bar {
-            flex-grow: 1;
-            height: 5px;
-            background-color: #555;
-            margin: 0 15px;
-            border-radius: 3px;
-            position: relative;
-            overflow: hidden;
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.3);
             cursor: pointer;
         }
         
         .progress {
-            position: absolute;
             height: 100%;
             width: 35%;
             background-color: #ff0000;
-            border-radius: 3px;
         }
         
-        .time {
-            font-size: 14px;
-            color: #ecf0f1;
-            margin: 0 10px;
-            font-weight: 500;
-        }
-        
-        .control-buttons {
+        .main-controls {
             display: flex;
             align-items: center;
+            width: 100%;
         }
         
         .control-button {
             background: none;
             border: none;
-            cursor: pointer;
-            margin: 0 8px;
-            color: #ecf0f1;
+            color: #fff;
             font-size: 18px;
+            cursor: pointer;
+            margin-right: 16px;
+            padding: 8px;
+        }
+        
+        .time-display {
+            font-size: 14px;
+            margin: 0 16px;
+        }
+        
+        .right-controls {
+            margin-left: auto;
             display: flex;
             align-items: center;
-            justify-content: center;
-            transition: color 0.2s;
         }
         
-        .control-button:hover {
-            color: #ff0000;
+        .volume-control {
+            display: flex;
+            align-items: center;
+            margin-right: 16px;
         }
         
-        .fullscreen-button {
-            margin-left: 10px;
+        .volume-slider {
+            width: 80px;
+            margin-left: 8px;
         }
         
         .video-info {
-            padding: 20px;
-            background-color: #fff;
+            padding: 16px;
         }
         
         .video-title {
-            font-size: 22px;
+            font-size: 18px;
             font-weight: 500;
-            margin-bottom: 15px;
-            color: #2c3e50;
+            margin-bottom: 12px;
             line-height: 1.4;
         }
         
-        .video-meta {
+        .video-stats {
             display: flex;
-            justify-content: space-between;
-            color: #606060;
-            font-size: 15px;
-            border-bottom: 1px solid #e5e5e5;
-            padding-bottom: 15px;
-            margin-bottom: 15px;
+            align-items: center;
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        
+        .divider {
+            margin: 0 8px;
+        }
+        
+        .actions-row {
+            display: flex;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .action-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 24px;
+            color: #aaa;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .action-button i {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        
+        .action-button.active {
+            color: #3ea6ff;
         }
         
         .channel-info {
             display: flex;
             align-items: center;
+            margin-bottom: 16px;
         }
         
-        .channel-avatar {
-            width: 50px;
-            height: 50px;
+        .channel-icon {
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #3498db, #2ecc71);
-            margin-right: 15px;
+            background-color: #3ea6ff;
+            margin-right: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
             font-weight: bold;
             font-size: 20px;
         }
@@ -196,174 +203,371 @@
         
         .channel-name {
             font-weight: 500;
-            color: #2c3e50;
-            font-size: 17px;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
         
-        .subscribers {
-            color: #606060;
+        .subscriber-count {
+            color: #aaa;
             font-size: 14px;
         }
         
-        .subscribe-button {
+        .subscribe-btn {
             background-color: #cc0000;
             color: white;
             border: none;
-            padding: 12px 18px;
-            border-radius: 4px;
+            padding: 10px 16px;
+            border-radius: 2px;
             font-weight: 500;
             cursor: pointer;
-            transition: background-color 0.2s;
         }
         
-        .subscribe-button:hover {
-            background-color: #ff0000;
+        .comments-section {
+            margin-top: 24px;
         }
         
-        .action-buttons {
+        .comments-header {
             display: flex;
-            justify-content: space-around;
-            margin-top: 20px;
-            border-top: 1px solid #e5e5e5;
-            padding-top: 20px;
-        }
-        
-        .action-button {
-            display: flex;
-            flex-direction: column;
             align-items: center;
-            color: #606060;
-            cursor: pointer;
-            transition: color 0.2s;
+            margin-bottom: 16px;
         }
         
-        .action-button:hover {
-            color: #ff0000;
-        }
-        
-        .action-button i {
-            font-size: 22px;
-            margin-bottom: 5px;
-        }
-        
-        .action-button span {
-            font-size: 14px;
+        .comments-count {
             font-weight: 500;
+            margin-right: 16px;
         }
         
-        .click-hint {
-            position: absolute;
-            bottom: 20px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            color: white;
-            font-size: 16px;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 10px;
-            z-index: 5;
-            animation: pulse 2s infinite;
+        .sort-button {
+            background: none;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
         }
         
-        @keyframes pulse {
-            0% { opacity: 0.7; }
-            50% { opacity: 1; }
-            100% { opacity: 0.7; }
+        .sort-button i {
+            margin-left: 4px;
         }
         
-        .watermark {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 5px 10px;
-            border-radius: 5px;
-            z-index: 5;
+        .add-comment {
+            display: flex;
+            margin-bottom: 24px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #3ea6ff;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+        
+        .comment-input {
+            flex-grow: 1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 4px;
+            color: #aaa;
+        }
+        
+        .comment {
+            display: flex;
+            margin-bottom: 16px;
+        }
+        
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #3ea6ff;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+        
+        .comment-content {
+            flex-grow: 1;
+        }
+        
+        .comment-author {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .comment-text {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .comment-actions {
+            display: flex;
+            align-items: center;
+            color: #aaa;
+            font-size: 14px;
+        }
+        
+        .comment-action {
+            margin-right: 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .comment-action i {
+            margin-right: 4px;
+        }
+        
+        .related-videos {
+            margin-top: 24px;
+        }
+        
+        .related-header {
+            font-weight: 500;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .related-video {
+            display: flex;
+            margin-bottom: 16px;
+            cursor: pointer;
+        }
+        
+        .related-thumbnail {
+            width: 160px;
+            height: 90px;
+            background-color: #222;
+            margin-right: 16px;
+            flex-shrink: 0;
+            border-radius: 4px;
+        }
+        
+        .related-details {
+            flex-grow: 1;
+        }
+        
+        .related-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .related-channel {
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        
+        .related-views {
+            color: #aaa;
+            font-size: 14px;
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                display: flex;
+            }
+            
+            .player-section {
+                flex: 1;
+            }
+            
+            .related-videos {
+                width: 400px;
+                margin-left: 24px;
+                margin-top: 0;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="youtube-player" id="player">
-            <div class="video-container">
-                <img class="thumbnail" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4NTMgNDgwIiBmaWxsPSJub25lIj48cmVjdCB3aWR0aD0iODUzIiBoZWlnaHQ9IjQ4MCIgZmlsbD0iIzIyMiIvPjx0ZXh0IHg9IjQyNi41IiB5PSIyNDAiIGZpbGw9IiM1NTUiIGZvbnQtc2l6ZT0iMjQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPllvdVR1YmUgVmlkZW8gUGxhY2Vob2xkZXI8L3RleHQ+PC9zdmc+" alt="Video placeholder">
-                <div class="play-button"></div>
-                <div class="watermark">YouTube</div>
-                <div class="click-hint">Нажмите в любом месте для перехода по ссылке</div>
+        <div class="player-section">
+            <div class="player-container" id="player">
+                <div class="video-container">
+                    <img class="thumbnail" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjgwIDcyMCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjEyODAiIGhlaWdodD0iNzIwIiBmaWxsPSIjMjIyIi8+PHRleHQgeD0iNjQwIiB5PSIzNjAiIGZpbGw9IiM1NTUiIGZvbnQtc2l6ZT0iMjQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPllvdVR1YmUgVmlkZW88L3RleHQ+PC9zdmc+" alt="Video">
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                    </div>
+                    <div class="controls-overlay">
+                        <div class="main-controls">
+                            <button class="control-button"><i class="fas fa-play"></i></button>
+                            <div class="time-display">10:29</div>
+                            <div class="right-controls">
+                                <div class="volume-control">
+                                    <button class="control-button"><i class="fas fa-volume-up"></i></button>
+                                </div>
+                                <button class="control-button"><i class="fas fa-expand"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
-            <div class="player-controls">
-                <button class="control-button"><i class="fas fa-play"></i></button>
-                <div class="progress-bar">
-                    <div class="progress"></div>
-                </div>
-                <div class="time">0:35 / 10:00</div>
+            <div class="video-info">
+                <h1 class="video-title">Полное руководство по веб-разработке 2023 - с нуля до профессионала</h1>
                 
-                <div class="control-buttons">
-                    <button class="control-button"><i class="fas fa-volume-up"></i></button>
-                    <button class="control-button"><i class="fas fa-cog"></i></button>
-                    <button class="control-button fullscreen-button"><i class="fas fa-expand"></i></button>
+                <div class="video-stats">
+                    <span>1 243 908 просмотров</span>
+                    <span class="divider">•</span>
+                    <span>15 мая 2023 г.</span>
+                </div>
+                
+                <div class="actions-row">
+                    <button class="action-button active">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span>124K</span>
+                    </button>
+                    <button class="action-button">
+                        <i class="fas fa-thumbs-down"></i>
+                        <span>Не нравится</span>
+                    </button>
+                    <button class="action-button">
+                        <i class="fas fa-share"></i>
+                        <span>Поделиться</span>
+                    </button>
+                    <button class="action-button">
+                        <i class="fas fa-download"></i>
+                        <span>Скачать</span>
+                    </button>
+                    <button class="action-button">
+                        <i class="fas fa-cut"></i>
+                        <span>Клип</span>
+                    </button>
+                    <button class="action-button">
+                        <i class="fas fa-plus-square"></i>
+                        <span>Сохранить</span>
+                    </button>
+                </div>
+                
+                <div class="channel-info">
+                    <div class="channel-icon">C</div>
+                    <div class="channel-details">
+                        <div class="channel-name">CodeMaster</div>
+                        <div class="subscriber-count">2,3 млн подписчиков</div>
+                    </div>
+                    <button class="subscribe-btn">ПОДПИСАТЬСЯ</button>
+                </div>
+                
+                <div class="comments-section">
+                    <div class="comments-header">
+                        <div class="comments-count">4 823 комментария</div>
+                        <button class="sort-button">
+                            <span>Сначала популярные</span>
+                            <i class="fas fa-sort-down"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="add-comment">
+                        <div class="user-avatar"></div>
+                        <div class="comment-input">Добавьте комментарий...</div>
+                    </div>
+                    
+                    <div class="comment">
+                        <div class="comment-avatar"></div>
+                        <div class="comment-content">
+                            <div class="comment-author">Алексей Петров</div>
+                            <div class="comment-text">Отличное руководство! Ждал нечто подобное уже давно. Спасибо за качественный контент!</div>
+                            <div class="comment-actions">
+                                <div class="comment-action">
+                                    <i class="fas fa-thumbs-up"></i>
+                                    <span>1,2 тыс.</span>
+                                </div>
+                                <div class="comment-action">
+                                    <i class="fas fa-thumbs-down"></i>
+                                </div>
+                                <div class="comment-action">Ответить</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="comment">
+                        <div class="comment-avatar"></div>
+                        <div class="comment-content">
+                            <div class="comment-author">Мария Иванова</div>
+                            <div class="comment-text">Очень подробное объяснение, особенно понравился раздел про анимации CSS.</div>
+                            <div class="comment-actions">
+                                <div class="comment-action">
+                                    <i class="fas fa-thumbs-up"></i>
+                                    <span>845</span>
+                                </div>
+                                <div class="comment-action">
+                                    <i class="fas fa-thumbs-down"></i>
+                                </div>
+                                <div class="comment-action">Ответить</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <div class="video-info">
-            <h1 class="video-title">Как создать реалистичный YouTube плеер на HTML и CSS</h1>
+        <div class="related-videos">
+            <div class="related-header">Сейчас популярно</div>
             
-            <div class="video-meta">
-                <span>123,456 просмотров</span>
-                <span>25 мая 2023 г.</span>
+            <div class="related-video">
+                <div class="related-thumbnail"></div>
+                <div class="related-details">
+                    <div class="related-title">Новые возможности JavaScript 2023 - что нужно знать</div>
+                    <div class="related-channel">WebDev</div>
+                    <div class="related-views">509 тыс. просмотров</div>
+                </div>
             </div>
             
-            <div class="channel-info">
-                <div class="channel-avatar">WC</div>
-                <div class="channel-details">
-                    <div class="channel-name">Web Code Tutorials</div>
-                    <div class="subscribers">105K подписчиков</div>
+            <div class="related-video">
+                <div class="related-thumbnail"></div>
+                <div class="related-details">
+                    <div class="related-title">React против Vue - что выбрать в 2023 году?</div>
+                    <div class="related-channel">Frontend Weekly</div>
+                    <div class="related-views">318 тыс. просмотров</div>
                 </div>
-                <button class="subscribe-button">ПОДПИСАТЬСЯ</button>
             </div>
             
-            <div class="action-buttons">
-                <div class="action-button">
-                    <i class="far fa-thumbs-up"></i>
-                    <span>2.5K</span>
+            <div class="related-video">
+                <div class="related-thumbnail"></div>
+                <div class="related-details">
+                    <div class="related-title">Создание анимаций на CSS - полное руководство</div>
+                    <div class="related-channel">UI Masters</div>
+                    <div class="related-views">427 тыс. просмотров</div>
                 </div>
-                <div class="action-button">
-                    <i class="far fa-thumbs-down"></i>
-                    <span>Не нравится</span>
+            </div>
+            
+            <div class="related-video">
+                <div class="related-thumbnail"></div>
+                <div class="related-details">
+                    <div class="related-title">Как оптимизировать сайт для максимальной скорости загрузки</div>
+                    <div class="related-channel">Web Performance</div>
+                    <div class="related-views">291 тыс. просмотров</div>
                 </div>
-                <div class="action-button">
-                    <i class="far fa-comment"></i>
-                    <span>123</span>
-                </div>
-                <div class="action-button">
-                    <i class="fas fa-share"></i>
-                    <span>Поделиться</span>
+            </div>
+            
+            <div class="related-video">
+                <div class="related-thumbnail"></div>
+                <div class="related-details">
+                    <div class="related-title">Топ-10 инструментов для веб-разработчика в 2023</div>
+                    <div class="related-channel">DevTools</div>
+                    <div class="related-views">387 тыс. просмотров</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        document.getElementById('player').addEventListener('click', function() {
-            // Открываем ссылку YouTube в новом окне при клике в любом месте плеера
-            window.open('https://www.youtube.com', '_blank');
-        });
-        
-        // Обработка клика по кнопке воспроизведения
-        document.querySelector('.play-button').addEventListener('click', function(e) {
-            e.stopPropagation(); // Предотвращаем всплытие события, чтобы не открывалась ссылка
-            alert('Видео воспроизводится! (В реальном приложении здесь был бы видеоплеер)');
-        });
-        
-        document.querySelector('.control-button .fa-play').closest('.control-button').addEventListener('click', function(e) {
-            e.stopPropagation();
-            alert('Видео воспроизводится!');
+        document.addEventListener('DOMContentLoaded', function() {
+            // Открываем ссылку при клике в любом месте страницы
+            document.addEventListener('click', function() {
+                window.open('https://www.youtube.com', '_blank');
+            });
+            
+            // Предотвращаем открытие ссылки при клике на элементы управления
+            const controlElements = document.querySelectorAll('.control-button, .action-button, .subscribe-btn, .sort-button, .comment-input, .related-video');
+            controlElements.forEach(element => {
+                element.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
         });
     </script>
 </body>
