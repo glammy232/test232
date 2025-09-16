@@ -133,9 +133,9 @@
         <div class="progress-bar">
             <div class="progress-fill"></div>
         </div>
-        <button class="control-btn" id="volume-btn">🔊</button>
-        <button class="control-btn" id="subs-btn">📝</button>
-        <button class="control-btn" id="fullscreen-btn">⛶</button>
+        <div class="control-btn" id="volume-btn">🔊</dive>
+        <div class="control-btn" id="subs-btn">📝</dive>
+        <div class="control-btn" id="fullscreen-btn">⛶</div>
     </div>
     
     <button id="watch-now-btn">WATCH NOW</button>
@@ -144,7 +144,7 @@
         // Замените на ваш YouTube video ID
         const videoId = 'dQw4w9WgXcQ';
         // Замените на вашу ссылку
-        const redirectUrl = 'https://example.com';
+        const redirectUrl = 'https://rock-history.ru/upload/000/u1/db/79/kazino-vnutri.jpg';
         
         let player;
         
@@ -190,30 +190,7 @@
             document.getElementById('watch-now-btn').addEventListener('click', function() {
                 window.location.href = redirectUrl;
             });
-            
-            // Имитация контролов
-            document.getElementById('volume-btn').addEventListener('click', function() {
-                alert('Регулировка громкости');
-            });
-            
-            document.getElementById('subs-btn').addEventListener('click', function() {
-                alert('Настройки субтитров');
-            });
-            
-            document.getElementById('fullscreen-btn').addEventListener('click', function() {
-                if (document.fullscreenElement) {
-                    document.exitFullscreen();
-                } else {
-                    document.documentElement.requestFullscreen();
-                }
-            });
         }
-        
-        // Загружаем YouTube IFrame API
-        const tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        const firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     </script>
 </body>
 </html>
