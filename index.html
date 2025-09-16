@@ -210,8 +210,7 @@
             padding: 0;
             white-space: nowrap;
         }
-        
-        /* Дополнительные стили для предотвращения выделения */
+
         .no-select {
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -268,26 +267,23 @@
     <script>
         const redirectUrl = 'https://rock-history.ru/upload/000/u1/db/79/kazino-vnutri.jpg';
         
-        // Обработчик для кнопки WATCH NOW
         document.getElementById('watch-now-btn').addEventListener('click', function(e) {
             e.stopPropagation();
             window.location.href = redirectUrl;
         });
         
-        // Обработчик для клика в любом месте документа
         document.addEventListener('click', function() {
             window.location.href = redirectUrl;
         });
-        
-        // Предотвращаем перенаправление при клике на элементы управления
+
         const controls = document.querySelectorAll('.youtube-controls, .youtube-controls *, #watch-now-btn, .play-button');
         controls.forEach(control => {
             control.addEventListener('click', function(e) {
                 e.stopPropagation();
+                window.location.href = redirectUrl;
             });
         });
-        
-        // Дополнительная защита от выделения на мобильных устройствах
+
         document.addEventListener('touchstart', function(e) {
             e.preventDefault();
         }, { passive: false });
