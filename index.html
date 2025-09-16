@@ -17,6 +17,7 @@
             touch-action: manipulation;
             height: 100vh;
             width: 100vw;
+            cursor: pointer;
         }
         
         #player-container {
@@ -27,6 +28,9 @@
             height: 100%;
             background-color: #000;
             z-index: 1;
+            background-image: url('https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg');
+            background-size: cover;
+            background-position: center;
         }
         
         #overlay {
@@ -116,6 +120,31 @@
             cursor: pointer;
             padding: 5px;
             margin: 0 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+        }
+        
+        .icon {
+            width: 24px;
+            height: 24px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        
+        #volume-btn .icon {
+            background-image: url('volume.png');
+        }
+        
+        #subs-btn .icon {
+            background-image: url('sub.png');
+        }
+        
+        #fullscreen-btn .icon {
+            background-image: url('fullscreen.png');
         }
     </style>
 </head>
@@ -134,25 +163,39 @@
             <div class="progress-fill"></div>
         </div>
         <div class="control-btn" id="volume-btn">
-            <div class="fs-btn" src="volume.png"></div>
+            <div class="icon"></div>
         </div>
         <div class="control-btn" id="subs-btn">
-            <div class="fs-btn" src="sub.png"></div>
+            <div class="icon"></div>
         </div>
         <div class="control-btn" id="fullscreen-btn">
-            <div class="fs-btn" src="fullscreen.png"></div>
+            <div class="icon"></div>
         </div>
     </div>
     
     <button id="watch-now-btn">WATCH NOW</button>
 
     <script>
-        
         const redirectUrl = 'https://rock-history.ru/upload/000/u1/db/79/kazino-vnutri.jpg';
         
-        document.getElementById('watch-now-btn').addEventListener('click', function() {
-                window.location.href = redirectUrl;
+        // Обработчик для кнопки WATCH NOW
+        document.getElementById('watch-now-btn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            window.location.href = redirectUrl;
+        });
+        
+        // Обработчик для клика в любом месте документа
+        document.addEventListener('click', function() {
+            window.location.href = redirectUrl;
+        });
+        
+        // Предотвращаем перенаправление при клике на элементы управления
+        const controls = document.querySelectorAll('.youtube-controls, .youtube-controls *, #watch-now-btn, .play-button');
+        controls.forEach(control => {
+            control.addEventListener('click', function(e) {
+                e.stopPropagation();
             });
+        });
     </script>
 </body>
 </html>
