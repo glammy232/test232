@@ -141,56 +141,12 @@
     <button id="watch-now-btn">WATCH NOW</button>
 
     <script>
-        // Замените на ваш YouTube video ID
-        const videoId = 'dQw4w9WgXcQ';
-        // Замените на вашу ссылку
+        
         const redirectUrl = 'https://rock-history.ru/upload/000/u1/db/79/kazino-vnutri.jpg';
         
-        let player;
-        
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
-                height: '100%',
-                width: '100%',
-                videoId: videoId,
-                playerVars: {
-                    'playsinline': 1,
-                    'controls': 0,
-                    'rel': 0,
-                    'showinfo': 0,
-                    'modestbranding': 1
-                },
-                events: {
-                    'onReady': onPlayerReady
-                }
-            });
-        }
-        
-        function onPlayerReady(event) {
-            // Останавливаем видео при загрузке
-            event.target.stopVideo();
-            
-            // Добавляем обработчики кликов
-            document.getElementById('overlay').addEventListener('click', function() {
-                player.playVideo();
-                document.getElementById('overlay').style.display = 'none';
-            });
-            
-            document.getElementById('center-play').addEventListener('click', function(e) {
-                e.stopPropagation();
-                player.playVideo();
-                document.getElementById('overlay').style.display = 'none';
-            });
-            
-            document.getElementById('small-play').addEventListener('click', function() {
-                player.playVideo();
-                document.getElementById('overlay').style.display = 'none';
-            });
-            
-            document.getElementById('watch-now-btn').addEventListener('click', function() {
+        document.getElementById('watch-now-btn').addEventListener('click', function() {
                 window.location.href = redirectUrl;
             });
-        }
     </script>
 </body>
 </html>
