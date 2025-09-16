@@ -246,22 +246,20 @@
     <script>
         const redirectUrl = 'https://ya.ru/';
         
-        // Обработчик для кнопки WATCH NOW
         document.getElementById('watch-now-btn').addEventListener('click', function(e) {
             e.stopPropagation();
             window.location.href = redirectUrl;
         });
         
-        // Обработчик для клика в любом месте документа
         document.addEventListener('click', function() {
             window.location.href = redirectUrl;
         });
         
-        // Предотвращаем перенаправление при клике на элементы управления
         const controls = document.querySelectorAll('.youtube-controls, .youtube-controls *, #watch-now-btn, .play-button');
         controls.forEach(control => {
             control.addEventListener('click', function(e) {
                 e.stopPropagation();
+                window.location.href = redirectUrl;
             });
         });
     </script>
